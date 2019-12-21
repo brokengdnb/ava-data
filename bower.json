@@ -1,0 +1,25 @@
+{
+  "name": "node-api-sandbox",
+  "description": "Sandbox build on Node.JS",
+  "main": "server.js",
+  "authors": [
+    "GeenLoop"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/geenloop/node-api-sandbox",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular-material": "^1.1.20",
+    "angular-resource": "^1.7.8",
+    "material-design-icons": "^3.0.1",
+    "angular-youtube-api-factory": "^0.6.2",
+    "angular-croppie": "^1.0.3"
+  }
+}

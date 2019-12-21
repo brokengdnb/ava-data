@@ -1,0 +1,64 @@
+{
+  "name": "node-api-sandbox",
+  "version": "1.0.0",
+  "description": "Sandbox build on Node.JS",
+  "main": "server.js",
+  "scripts": {
+    "start": "nodemon server.js"
+  },
+  "engines": {
+    "node": "12.1.0"
+  },
+  "nodemonConfig": {
+    "ignore": [
+      "public/*",
+      "views/*",
+      "upload/*"
+    ],
+    "delay": "1500"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/geenloop/node-api-sandbox"
+  },
+  "author": "GeenLoop",
+  "license": "MIT",
+  "homepage": "https://github.com/geenloop/node-api-sandbox",
+  "devDependencies": {
+    "nodemon": "^1.12.5"
+  },
+  "dependencies": {
+    "angular-croppie": "^1.0.3",
+    "archiver": "~1.0.0",
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "express": "^4.16.3",
+    "express-fileupload": "^1.1.6",
+    "express-oas-generator": "^1.0.9",
+    "express-stream": "^0.8.0",
+    "ffmetadata": "^1.6.0",
+    "ffmpeg-normalize": "^1.8.0",
+    "fluent-ffmpeg": "^2.1.2",
+    "fs": "0.0.1-security",
+    "fs-extra": "^8.1.0",
+    "geoip-lite": "^1.3.8",
+    "http": "0.0.0",
+    "id3-writer": "^1.3.0",
+    "mongodb": "^2.2.33",
+    "mongoose": "^5.2.8",
+    "nodemailer": "^6.3.0",
+    "path": "^0.12.7",
+    "pug": "^2.0.4",
+    "sharp": "^0.23.4",
+    "socket.io": "^2.3.0",
+    "uWebSockets.js": "github:uNetworking/uWebSockets.js#v15.11.0",
+    "unzip-stream": "^0.3.0",
+    "unzipper": "^0.10.4",
+    "uws": "^100.0.1",
+    "winston": "^3.2.1",
+    "ws-avc-player": "^1.0.0",
+    "yargs": "^14.0.0",
+    "youtube-dl": "^2.1.0",
+    "ytdl-core": "^1.0.3"
+  }
+}

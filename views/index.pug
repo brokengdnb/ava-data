@@ -1,0 +1,49 @@
+mixin links(names)
+    each name in names
+        link(rel="stylesheet", type="text/css", href=name)
+mixin scripts(names)
+    each name in names
+        script(type="text/javascript", src=name)
+mixin scriptsBowerAngular(names)
+    each name in names
+        script(type="text/javascript", src="/bower_components/"+name+"/"+name+".min.js")
+html(lang="en")
+    head
+        title=appName
+        meta(name="mobile-web-app-capable" content="yes")
+        meta(name="viewport" content="width=device-width, initial-scale=1")
+        meta(name="theme-color" content="#000")
+
+        +links([
+            "/bower_components/angular-material/angular-material.min.css",
+            "/styles/main.css",
+            "/styles/croppie.css"
+        ])
+
+        +scriptsBowerAngular([
+            "angular",
+            "angular-animate",
+            "angular-aria",
+            "angular-material",
+            "angular-messages",
+            "angular-resource",
+            "angular-route",
+        ])
+
+        +scripts([
+            "/bower_components/angular-youtube-api-factory/dist/angular-youtube-api-factory.min.js",
+            "//cdn.bootcss.com/flv.js/1.5.0/flv.min.js",
+            "/scripts/WSAvcPlayer.js",
+            "/scripts/NodePlayer.js",
+            "/scripts/croppie.min.js",
+            "/scripts/angular-croppie.js",
+            "/scripts/socket.io.slim.js",
+            "/scripts/ua-parser.min.js",
+            "/scripts/jquery.min.js",
+            "/scripts/app.js",
+            "/scripts/index/component.js",
+            "/scripts/search/component.js",
+            "/scripts/save/component.js"
+        ])
+    body(ng-app="ngApp")
+        div(ng-view)
