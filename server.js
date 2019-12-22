@@ -55,16 +55,12 @@ require("./app/routes/backup.routes.js")(app);
 require("./app/routes/search.routes.js")(app);
 // define a default ROUTE to redirect to API-DOC
 app.get("/", (req, res) => {
-    fs.readFile('package.json', 'utf8', function (err, data) {
-        if (err) throw err;
-        var configData = JSON.parse(data);
-        res.render(
+   res.render(
             'index',
             {
-                appName: configData.name,
-                appVersion: configData.name + " v" + configData.version,
+                appName: "configData.name",
+                appVersion: "f",
             });
-    });
 });
 
 // RENDER ALL COLLECTIONS IN DATABASE
@@ -90,24 +86,24 @@ app.get('/ytimg', function(req, res) {
             // Downloads available thumbnail.
             all: false,
             // The directory to save the downloaded files in.
-            cwd: 'ytdl',
+            cwd: path.join(__dirname, 'ytdl/'),
         };
 
         youtubedl.getThumbs(url, options, function(err, files) {
             if (err) console.log('ERROR: ' + err);
 
-            sharp('ytdl/' + files)
+            sharp(path.join(__dirname, 'ytdl/') + files)
                 .resize(500)
-                .toFile('upload/temp.jpg', (errr, info) => {
+                .toFile(path.join(__dirname, 'upload/temp.jpg'), (errr, info) => {
                     if (errr) console.error('image processing: ' + errr);
 
-                    fs.stat('ytdl/' + files, function (errrr, stats) {
+                    fs.stat(path.join(__dirname, 'ytdl/') + files, function (errrr, stats) {
                         //console.log(stats);//here we got all information of file in stats variable
                         if (errrr) {
                             return console.error(errrr);
                         }
 
-                        fs.unlink('ytdl/' + files,function(error){
+                        fs.unlink(path.join(__dirname, 'ytdl/') + files,function(error){
                             if(error) return console.log(error);
 
                             res.status(200);
@@ -318,13 +314,19 @@ app.post('/downloadAudio', function(req, res) {
             io.sockets.emit('YTFFactive', true);
 
             var tags = req.body.data.youtubeTags;
-            var myStr = tags.toString();
+
+            if (typeof tags === 'undefined') {
+                var myStr = "";
+            } else {
+                var myStr = tags.toString();
+            }
+            
 
             var tagsString = myStr.replace(/,/g, " ");
 
             const video = youtubedl(url,
                 // Optional arguments passed to youtube-dl.
-                ['--no-continue', '-o', 'ytdl/temp.mp4', '--format', 'best[ext=mp4]'],
+                ['--no-continue', '-o', path.join(__dirname, 'ytdl/temp.mp4'), '--format', 'best[ext=mp4]'],
                 // Additional options can be given for calling `child_process.execFile()`.
                 { cwd: __dirname });
 
@@ -348,16 +350,18 @@ app.post('/downloadAudio', function(req, res) {
             video.on('end', function(info) {
                 var base64Data = req.body.data.imgCover.replace(/^data:image\/png;base64,/, "");
 
-                fs.writeFile("upload/temp.png", base64Data, 'base64', function(err) {
+                fs.writeFile(path.join(__dirname, 'ytdl/temp.png'), base64Data, 'base64', function(err) {
                     console.log(err);
                 });
 
-                ffmpeg('ytdl/temp.mp4').outputOptions([
+                ffmpeg(path.join(__dirname, 'ytdl/temp.mp4')).outputOptions([
                     '-vn',
                     '-b:a 256k'
                 ])
                     .on('progress', function(progress) {
-                        io.sockets.emit('convertPosition', progress.percent.toFixed(1));
+                        console.log(progress);
+
+                        //io.sockets.emit('convertPosition', progress.percent.toFixed(1));
                     })
                     .on('error', function(err) {
                         console.log('An error occurred: ' + err.message);
@@ -388,15 +392,15 @@ app.post('/downloadAudio', function(req, res) {
                         };
 
                         var options = {
-                            attachments: ["upload/temp.png"]
+                            attachments: [path.join(__dirname, 'ytdl/temp.png')]
                         };
 
-                        ffmetadata.write("upload/output.mp3", data, options, function(err) {
+                        ffmetadata.write(path.join(__dirname, 'upload/output.mp3'), data, options, function(err) {
                             if (err) console.error("Error writing metadata", err);
                             else {
                                 console.log('META DONE!');
 
-                                fs.rename('upload/output.mp3', 'upload/' + req.body.data.youtubeID + '.mp3', function(renameError) {
+                                fs.rename(path.join(__dirname, 'upload/output.mp3'), path.join(__dirname, 'upload/' + req.body.data.youtubeID + '.mp3'), function(renameError) {
                                     if ( renameError ) console.error('rename: ' + renameError);
 
                                     res.status(200);
@@ -406,10 +410,10 @@ app.post('/downloadAudio', function(req, res) {
                                 });
                             }
                         });
-                    }).save('upload/output.mp3');
+                    }).save(path.join(__dirname, 'upload/output.mp3'));
             });
 
-            video.pipe(fs.createWriteStream('ytdl/temp.mp4'))
+            video.pipe(fs.createWriteStream(path.join(__dirname, 'ytdl/temp.mp4')))
         } else {
             res.status(200);
             res.setHeader('Content-Type', 'application/json');
