@@ -1,0 +1,165 @@
+<div ng-controller="csvCtrl" flex layout="column" layout-fill="" style="overflow: hidden !important;">
+
+
+    <md-button md-whiteframe="10" aria-label="menu" ng-click="addPlaylist($event)"  class="md-fab md-fab-bottom-right">
+        <md-icon aria-label="all" style="color:black">done_all</md-icon>
+    </md-button>
+
+
+    <div flex layout="row" layout-fill="" layout-xs="column">
+        <div layout="column" layout-align="space-between" flex>
+           <!-- <md-card md-whiteframe="10" flex layout="column" style="max-height: 148px;">
+                <section class="container">
+
+                    <section class="droplet" ng-class="{ uploading: interface.isUploading() }">
+
+                        <section class="toolbar">
+
+                            <input type="button" class="button upload-files" value="Upload Files"
+                                   ng-click="interface.uploadFiles()"
+                                   ng-hide="interface.isUploading()"
+                                   ng-class="{ clickable: interface.isReady() }" />
+
+                            <input type="button" class="button upload-files" value="Uploading..." ng-show="interface.isUploading()" />
+
+                            <div class="add-files">
+                                <input type="button" class="button add-files" value="Add Files..." />
+                                <droplet-upload-multiple ng-model="interface"></droplet-upload-multiple>
+                            </div>
+
+                            <comment class="progress" ng-class="{ visible: interface.isUploading() }">
+                                Uploaded: {{interface.progress.percent}}%
+                            </comment>
+
+                        </section>
+
+                        <ul class="statistics" style="margin-top: 3px;margin-bottom: 3px;padding-left: 0; text-align: center">
+                            <li><label>Valid:</label> {{interface.getFiles(interface.FILE_TYPES.VALID).length}}</li>
+                            <li><label>Invalid:</label> {{interface.getFiles(interface.FILE_TYPES.INVALID).length}}</li>
+                            <li><label>Uploaded:</label> {{interface.getFiles(interface.FILE_TYPES.UPLOADED).length}}</li>
+                            <li><label>Deleted:</label> {{interface.getFiles(interface.FILE_TYPES.DELETED).length}}</li>
+                            <li><label>Total:</label> {{interface.getFiles().length}}</li>
+                        </ul>
+
+
+
+                        <droplet ng-model="interface">
+
+                            <div class="loading" ng-class="{ visible: interface.isUploading() }">
+                                {{interface.progress.percent}}
+                            </div>
+
+                            <comment></comment>
+
+                            <ul class="files">
+                                <li ng-repeat="model in interface.getFiles(interface.FILE_TYPES.VALID)">
+                                    <div class="name">{{model.file.name}}</div>
+                                    <div class="delete" ng-click="model.deleteFile()">&times;</div>
+                                    <div class="size">{{model.file.size / 1024 / 1024 | number: 1}}MB</div>
+                                </li>
+
+                            </ul>
+
+                        </droplet>
+
+                    </section>
+
+                </section>
+            </md-card>-->
+            <md-card md-whiteframe="10" flex layout="column">
+
+                <md-tabs class="md-primary" layout-fill="">
+                    <md-tab label="Files" layout="column" layout-fill="">
+
+                        <md-list>
+                            <md-list-item ng-hide="local.name === '.DS_Store' || local.name === 'tn.png' || local.extension !== '.csv'" class="md-2-line" ng-repeat="local in localList" ng-click="getVideoInfo(local)">
+                                <div class="md-list-item-text">
+                                    <h3>{{local.name}}</h3>
+                                    <p>{{local.extension}} - {{formatBytes(local.fileSizeInBytes)}}</p>
+                                </div>
+                            </md-list-item>
+                        </md-list>
+
+                    </md-tab>
+                </md-tabs>
+
+
+
+               <!-- <md-list>
+                    <md-list-item class="md-2-line" ng-repeat="yt in youtubeDataSorted">
+                        <div class="md-list-item-text" ng-click="showVideo(yt)" style="border: none; outline: none">
+
+                            <h3>{{yt.data.snippet.title}}</h3>
+
+
+                            <div layout="row">
+                                <div layout-padding="">
+                                    <img src="{{yt.data.snippet.thumbnails.default.url}}" width="100px"/>
+                                </div>
+
+                                <div layout-padding="">
+                                    <p>{{numberWithSpaces(yt.data.statistics.viewCount)}}</p>
+                                    <h3>{{youtubeDurationToSeconds(yt.data.contentDetails.duration) | secondsToHHmmss}}</h3>
+                                </div>
+                            </div>
+
+
+                            &lt;!&ndash;
+                                                        <h4>{{duration_for(youtubeDurationToSeconds(yt.data.contentDetails.duration))}}</h4>
+                            &ndash;&gt;
+
+                        </div>
+                    </md-list-item>
+                </md-list>-->
+
+            </md-card>
+
+
+        </div>
+
+        <div layout="column" flex="75">
+
+            <md-card md-whiteframe="10" flex>
+
+
+                <md-list style="overflow-y: auto">
+                    <md-list-item class="md-3-line" ng-repeat="csv in csvList">
+                        <div class="md-list-item-text" style="border-bottom: 1px dotted gold">
+                            <h3 flex layout="row" style="margin-top: 16px;">
+                                <md-input-container md-theme="input-dark" style="width:30px; margin: 0; height: 42px">
+                                    <input ng-model="csv.trackNumber" aria-label="artist" style="width: 30px" ng-disabled="true"/>
+                                </md-input-container>
+
+                                <md-input-container flex md-theme="input-dark" style="margin: 0; height: 42px">
+                                    <input ng-model="csv.Artist" aria-label="artist"/>
+                                </md-input-container>
+
+                                <md-input-container flex md-theme="input-dark" style="margin: 0; height: 42px">
+                                    <input ng-model="csv.Title" aria-label="title"/>
+                                </md-input-container>
+
+                               </h3>
+                            <p>{{csv.Duration}} - {{csv.Key}} - {{csv.BPM}} BPM</p>
+                            <p>{{csv.Location}}</p>
+                        </div>
+
+                    </md-list-item>
+                </md-list>
+
+            </md-card>
+
+            <md-button md-whiteframe="10" aria-label="menu" ng-click="saveNode()" class="md-fab md-fab-bottom-left">
+                <md-icon aria-label="all" style="color:black">save</md-icon>
+            </md-button>
+
+
+            <md-card flex md-whiteframe="10" style="outline: none">
+                <div id="playlistsNetwork" style="outline: none; width: 100%; height: 100%" ></div>
+            </md-card>
+        </div>
+    </div>
+
+
+
+
+</div>

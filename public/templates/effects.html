@@ -1,0 +1,456 @@
+<div ng-controller="effectsCtrl" flex layout="column" layout-fill="" style="overflow: hidden !important;">
+
+
+    <md-button md-whiteframe="10" aria-label="menu" ng-click="addToDatabase()" ng-if="dataPost.path" class="md-fab md-fab-bottom-right">
+        <md-icon aria-label="add" style="color:black">done_all</md-icon>
+    </md-button>
+
+
+
+  <!--  <md-button md-whiteframe="10" aria-label="menu" ng-click="moveVideo()"  class="md-fab md-raised md-fab-bottom-right" style="margin-right: 90px">
+        <md-icon aria-label="movie" style="color:black">movie</md-icon>
+    </md-button>-->
+
+  <!--  <md-button md-whiteframe="10" aria-label="menu" ng-click=moveAudio()" class="md-fab md-raised md-fab-bottom-right" style="margin-right: 172px">
+        <md-icon aria-label="music" style="color:black">music_note</md-icon>
+    </md-button>-->
+
+
+    <div flex layout="row" layout-fill="" layout-xs="column">
+        <!--<md-button md-whiteframe="10" aria-label="menu" ng-click="downloadAll()"  class="md-fab md-fab-bottom-right">
+            <md-icon aria-label="all" style="color:black">done_all</md-icon>
+        </md-button>
+
+        <md-button md-whiteframe="10" aria-label="menu" ng-click="downloadVideo()"  class="md-fab md-raised md-fab-bottom-right" style="margin-right: 90px">
+            <md-icon aria-label="movie" style="color:black">movie</md-icon>
+        </md-button>
+
+        <md-button md-whiteframe="10" aria-label="menu" ng-click="downloadAudio()" class="md-fab md-raised md-fab-bottom-right" style="margin-right: 172px">
+            <md-icon aria-label="music" style="color:black">music_note</md-icon>
+        </md-button>-->
+
+
+
+        <md-button style="position:fixed; top: -12px; left: -15px" md-whiteframe="10" aria-label="menu" ng-click="updateListImportFolder()" class="md-fab md-mini">
+            <md-icon aria-label="reload">loop</md-icon>
+        </md-button>
+
+        <div layout="row" flex="40">
+
+            <div layout="column" layout-fill="">
+                <md-card md-whiteframe="10" flex="" layout="column">
+
+                    <md-tabs class="md-primary" layout-fill="" md-selected="selectedMoviesTabIndex">
+                        <md-tab label="Import" layout="column" layout-fill="">
+
+                            <md-list style="padding: 0" layout-fill="">
+                                <md-list-item class="md-2-line" ng-hide="local.name === '.DS_Store' || local.name === 'tn.png' || local.extension === '.mp3' || local.extension === '.flac' || local.extension === '.webm' || local.extension === '.acc' || local.extension === '.m4a' || local.extension === '.wav'" ng-repeat="local in localList" ng-click="getVideoInfo(local)">
+                                    <div class="md-list-item-text">
+                                        <h3>{{local.name}}</h3>
+                                        <p>{{local.extension}} - {{formatBytes(local.fileSizeInBytes)}}</p>
+                                    </div>
+                                </md-list-item>
+                            </md-list>
+
+
+
+                        </md-tab>
+
+                        <md-tab label="Effects" layout="column" layout-fill="" >
+
+                            <md-list style="padding: 0">
+                                <md-list-item class="md-2-line" ng-repeat="movie in effectsDatas | orderBy: '-createdAt'" ng-click="showDetail(movie)">
+                                    <div class="md-list-item-text">
+                                        <h3>{{movie.title}}</h3>
+                                        <p>{{movie.genre}} {{movie.duration}} - {{movie.size}}</p>
+                                    </div>
+                                </md-list-item>
+                            </md-list>
+
+                        </md-tab>
+                        <!--<md-tab label="Playlists" layout="column" layout-fill="" ng-if="showPlaylists">
+
+                            <md-button class="md-fab md-mini md-raised" style="position: absolute; right: 9px;" ng-click="addPlaylist($event)">
+                                <md-icon>add</md-icon>
+                            </md-button>
+                            <md-input-container md-theme="input-dark" style="margin-bottom: 0; margin-left: 9px; width: 94%;">
+                                <label>Search</label>
+                                <input ng-model="searchPlaylist"/>
+                            </md-input-container>
+                            <md-list style="overflow-y: scroll">
+                                <md-list-item class="md-2-line" ng-class="{ 'nav-active': playlistIdToEdit === playlist._id }" ng-click="changePlaylist(playlist._id)" ng-repeat="playlist in playlistListData | orderBy: '-createdAt' | filter: searchPlaylist">
+                                    <div class="md-list-item-text">
+                                        <h3>{{playlist.title}}</h3>
+                                        <p>
+
+                                        </p>
+                                        &lt;!&ndash; <md-button class="md-mini md-fab md-raised md-warn" ng-click="deletePlaylist(playlist._id)" style="position: absolute; top:0; right: 0">
+                                             <md-icon>delete</md-icon>
+                                         </md-button>&ndash;&gt;
+                                    </div>
+                                </md-list-item>
+                            </md-list>
+                        </md-tab>-->
+                    </md-tabs>
+                </md-card>
+
+                <md-button md-whiteframe="10" aria-label="menu" ng-click="saveNode()" class="md-fab md-fab-bottom-left">
+                    <md-icon aria-label="all" style="color:black">save</md-icon>
+                </md-button>
+
+
+                <md-card flex md-whiteframe="10" style="outline: none">
+                    <div id="playlistsNetwork" style="outline: none; width: 100%; height: 100%" ></div>
+                </md-card>
+
+
+            </div>
+
+
+
+
+
+        </div>
+
+        <div layout="column" flex="60" ng-if="showEditMovie">
+            <md-card md-whiteframe="10">
+                <video id="detailVideo" src="http://localhost:3000/export/effects/{{editMovie._id}}.mp4" controls autoplay style="width: 100%; border-radius: 3px;outline: none"></video>
+
+            </md-card>
+
+            <md-card md-whiteframe="10" layout-padding="">
+                <div layout="row" flex ng-repeat="stream in editMovie.streams" style="margin-bottom: -16px;margin-top: 16px">
+                    <md-input-container md-theme="input-dark" style="margin: 0">
+                        <label>Type</label>
+                        <input ng-model="stream.codec_type" ng-disabled="true"/>
+                    </md-input-container>
+                    <md-input-container md-theme="input-dark" style="margin: 0">
+                        <label>Codec</label>
+                        <input ng-model="stream.codec_name" ng-disabled="true"/>
+                    </md-input-container>
+                    <md-input-container md-theme="input-dark" style="margin: 0" ng-if="stream.codec_type === 'video' || stream.codec_type === 'audio'">
+                        <label>Bit Rate</label>
+                        <input ng-value="formatBitRate(stream.bit_rate)" ng-disabled="true"/>
+                    </md-input-container>
+                    <md-input-container md-theme="input-dark" style="margin: 0" ng-if="stream.codec_type === 'video'">
+                        <label>Resolution</label>
+                        <input value="{{stream.width + 'x' + stream.height}}" ng-disabled="true"/>
+                    </md-input-container>
+                    <md-input-container md-theme="input-dark" style="margin: 0" ng-if="stream.codec_type === 'video'">
+                        <label>Frame Rate</label>
+                        <input value="{{stream.r_frame_rate}}" ng-disabled="true"/>
+                    </md-input-container>
+                    <md-input-container md-theme="input-dark" style="margin: 0" ng-if="stream.codec_type === 'audio'">
+                        <label>Channels</label>
+                        <input value="{{stream.channel_layout + ' (' + stream.channels + ')'}}" ng-disabled="true"/>
+                    </md-input-container>
+                    <md-input-container md-theme="input-dark" flex style="margin: 0" ng-if="stream.codec_type === 'audio' || stream.codec_type === 'subtitle'">
+                        <label>Language</label>
+                        <input value="{{stream.tags.language}}" ng-disabled="true"/>
+                    </md-input-container>
+                </div>
+            </md-card>
+
+            <md-card layout="row" layout-align="space-between-center">
+                <md-button class="md-raised" ng-click="addToPlaylist(editMovie)">Add</md-button>
+                <md-button class="md-raised" ng-click="saveMovie()">Save</md-button>
+                <md-button class="md-raised md-warn" ng-click="deleteMovie(editMovie)">Delete</md-button>
+            </md-card>
+            <md-card md-whiteframe="10" flex layout-padding="" style="overflow-y: scroll">
+
+
+                <div layout="row" flex style="margin-top: 0;margin-bottom: -32px;">
+                    <md-input-container flex="15" md-theme="input-dark" style="margin-bottom: 0">
+                        <label>Genre</label>
+                        <input ng-model="editMovie.genre"/>
+                    </md-input-container>
+                    <md-input-container md-theme="input-dark">
+                        <label>Shape</label>
+                        <input ng-model="editMovie.shape" ng-disabled="true"/>
+                    </md-input-container>
+                    <md-input-container md-theme="input-dark">
+                        <label>Duration</label>
+                        <input ng-model="editMovie.duration" ng-disabled="true"/>
+                    </md-input-container>
+                    <md-input-container md-theme="input-dark">
+                        <label>Size</label>
+                        <input ng-model="editMovie.size" ng-disabled="true"/>
+                    </md-input-container>
+                    <md-input-container flex md-theme="input-dark" style="margin-bottom: 0">
+                        <label>Filename</label>
+                        <input ng-model="editMovie.filename" ng-disabled="true"/>
+                    </md-input-container>
+
+                </div>
+
+                <md-chips md-theme="input-dark" flex placeholder="Tags" ng-model="editMovie.tags"></md-chips>
+
+
+
+            </md-card>
+
+
+
+        </div>
+        <div layout="column" flex="60" ng-show="dataPost.path">
+            <md-progress-linear ng-show="YTFFactive" class="md-warn" md-mode="buffer" style="margin-top: 9px" value="{{determinateValue}}"
+                                md-buffer-value="{{determinateValue2}}"></md-progress-linear>
+
+            <md-card md-whiteframe="10" flex layout-padding="" style="overflow-y: scroll">
+
+                <div layout="row" layout-align="space-between start">
+
+                    <md-input-container flex md-theme="input-dark" flex="10">
+                        <label>Title</label>
+                        <input ng-model="dataPost.title"/>
+                    </md-input-container>
+
+                    <md-button ng-click="getTimeForScreenIMG()">Get time</md-button>
+
+                    <md-input-container md-theme="input-dark">
+                        <label>Screen time</label>
+                        <input ng-model="screenshotTime"/>
+                    </md-input-container>
+
+                    <md-button ng-click="reloadScreenIMG()">Reload img</md-button>
+                </div>
+
+                <div layout="row" layout-align="space-between start">
+                    <video id="preViewVideo" src="http://localhost:3000/import/{{dataPost.path}}" width="320" controls autoplay></video>
+                    <img ng-src="{{imageSource}}" style="width: 300px; height: 200px; display:none"/>
+                    <img ng-src="{{imgCover}}" width="148" height="148px"/>
+                    <croppie md-whiteframe="5" ng-show="imageSource" style="width: 300px;height: 200px; display: block;max-width: 100%;" src="imageSource" ng-model="imgCover" options="croppedOption"></croppie>
+                </div>
+
+
+
+                <div layout="row" flex style="margin-top: 69px">
+                    <md-input-container flex md-theme="input-dark">
+                        <label>Genre</label>
+                        <input ng-model="dataPost.genre" ng-disabled="disableInputs"/>
+                    </md-input-container>
+                    <md-input-container md-theme="input-dark">
+                        <label>Duration</label>
+                        <input ng-model="dataPost.duration" ng-disabled="true"/>
+                    </md-input-container>
+                    <md-input-container md-theme="input-dark">
+                        <label>Size</label>
+                        <input ng-model="dataPost.size" ng-disabled="true"/>
+                    </md-input-container>
+                </div>
+
+                <md-chips md-theme="input-dark" flex placeholder="Tags" ng-model="dataPost.tags"></md-chips>
+
+
+                <!-- <md-toolbar>
+                     <div class="md-toolbar-tools">
+                         <h2>Stream</h2>
+                         <span flex></span>
+                     </div>
+                 </md-toolbar>-->
+                <!--
+
+                                <canvas id="video-canvas" layout-fill=""></canvas>
+
+
+                                <canvas id="videoElement" width=640 height=480></canvas>
+
+                 <video id="videoElement" autoplay controls style="width: 100%"></video>
+
+                               -->
+
+               <!-- <div layout="column" layout-align="center">
+                    <div layout="row" layout-align="space-between start">
+                        <div id="ytplayer" md-whiteframe="5"></div>
+                        <div style="width: 300px; height: 200px;" layout="column" layout-align="center center">
+                            <md-button>Download</md-button>
+                            <img ng-src="{{dataPost.imgCover}}" ng-click="reloadImg()" ng-show="youtubeImage" style="width: 100px;height: 100px; border-radius: 50%; margin-top: -9px; cursor: alias"/>
+                        </div>
+                        <div layout="row" layout-align="center center" ng-hide="youtubeImage" style="width: 300px; height: 200px;">
+                            <md-progress-circular class="md-warn" md-mode="indeterminate"></md-progress-circular>
+                        </div>
+                        <croppie md-whiteframe="5" ng-show="youtubeImage" style="width: 300px;height: 200px; display: block;max-width: 100%;" src="youtubeImage" ng-model="dataPost.imgCover" options="croppedOption"></croppie>
+                    </div>
+                    <div layout="column" style="margin-top: 64px" >
+                        <div layout="row" flex>
+                            <md-input-container flex="50" md-theme="input-dark">
+                                <label>Original</label>
+                                <input ng-model="dataPost.content" ng-disabled="disableInputs"/>
+                            </md-input-container>
+                            <md-input-container flex md-theme="input-dark">
+                                <label>ID</label>
+                                <input ng-model="dataPost.youtubeID" ng-disabled="disableInputs" ng-change="changeIDInput()" ng-model-options='{ debounce: 1000 }' ng-keyup="$event.keyCode == 13 ? changeIDInput() : null"/>
+                            </md-input-container>
+                            <md-input-container flex md-theme="input-dark">
+                                <label>Year</label>
+                                <input ng-model="dataPost.youtubeYear" ng-disabled="disableInputs"/>
+                            </md-input-container>
+
+
+                        </div>
+
+
+                        <div layout="row" flex style="margin-top: 69px">
+
+                            <md-input-container flex md-theme="input-dark">
+                                <label>Artist</label>
+                                <input ng-model="dataPost.youtubeArtist" ng-disabled="disableInputs"/>
+                            </md-input-container>
+                            <md-input-container flex md-theme="input-dark">
+                                <label>Title</label>
+                                <input ng-model="dataPost.youtubeTitle" ng-disabled="disableInputs"/>
+                            </md-input-container>
+                            <md-input-container flex md-theme="input-dark">
+                                <label>Genre</label>
+                                <input ng-model="dataPost.youtubeGenre" ng-disabled="disableInputs"/>
+                            </md-input-container>
+                            <md-input-container flex md-theme="input-dark">
+                                <label>Album</label>
+                                <input ng-model="dataPost.youtubeAlbum" ng-disabled="disableInputs"/>
+                            </md-input-container>
+
+                        </div>
+
+
+                    </div>
+                    <div layout-padding="" style="position: absolute; bottom: 0; width: 50%">
+                        <md-chips md-theme="input-dark" flex placeholder="Tags" ng-model="dataPost.youtubeTags" md-removable="!disableInputs" readonly="disableInputs"></md-chips>
+                    </div>
+                </div>-->
+            </md-card>
+
+            <md-card layout-padding="" md-whiteframe="10" style="padding-top: 26px">
+                <div layout="row" flex ng-repeat="stream in streams" style="margin-bottom: -16px;">
+                    <md-input-container md-theme="input-dark" style="margin: 0">
+                        <label>Type</label>
+                        <input ng-model="stream.codec_type" ng-disabled="true"/>
+                    </md-input-container>
+                    <md-input-container md-theme="input-dark" style="margin: 0">
+                        <label>Codec</label>
+                        <input ng-model="stream.codec_name" ng-disabled="true"/>
+                    </md-input-container>
+                    <md-input-container md-theme="input-dark" style="margin: 0" ng-if="stream.codec_type === 'video' || stream.codec_type === 'audio'">
+                        <label>Bit Rate</label>
+                        <input ng-value="formatBitRate(stream.bit_rate)" ng-disabled="true"/>
+                    </md-input-container>
+                    <md-input-container md-theme="input-dark" style="margin: 0" ng-if="stream.codec_type === 'video'">
+                        <label>Resolution</label>
+                        <input value="{{stream.width + 'x' + stream.height}}" ng-disabled="true"/>
+                    </md-input-container>
+                    <md-input-container md-theme="input-dark" style="margin: 0" ng-if="stream.codec_type === 'video'">
+                        <label>Frame Rate</label>
+                        <input value="{{stream.r_frame_rate}}" ng-disabled="true"/>
+                    </md-input-container>
+                    <md-input-container md-theme="input-dark" style="margin: 0" ng-if="stream.codec_type === 'audio'">
+                        <label>Channels</label>
+                        <input value="{{stream.channel_layout + ' (' + stream.channels + ')'}}" ng-disabled="true"/>
+                    </md-input-container>
+                    <md-input-container md-theme="input-dark" flex style="margin: 0" ng-if="stream.codec_type === 'audio' || stream.codec_type === 'subtitle'">
+                        <label>Language</label>
+                        <input value="{{stream.tags.language}}" ng-disabled="true"/>
+                    </md-input-container>
+                </div>
+            </md-card>
+
+            <!-- <md-card flex-sm-gt="50" md-whiteframe="10">
+                 <md-tabs class="md-primary" md-center-tabs md-dynamic-height md-swipe-content md-align-tabs="bottom">
+                     <md-tab label="hidden">
+                         <span> </span>
+                     </md-tab>
+                     <md-tab label="controls">
+                         <div class="md-padding">
+
+
+                             <input id="play" type="button" value="Play" ng-click="playback(this)"/>
+                             <br />
+                             <textarea id="log" rows="8"></textarea>
+
+                         </div>
+                     </md-tab>
+                     <md-tab label="effects">
+                         <div class="md-padding">
+                             <h2 class="md-display-1">Tab Three</h2>
+                             <p class="md-body-1">
+                                 Integer turpis erat, porttitor vitae mi faucibus, laoreet interdum tellus. Curabitur
+                                 posuere molestie dictum. Morbi eget congue risus, quis rhoncus quam. Suspendisse
+                                 vitae hendrerit erat, at posuere mi. Cras eu fermentum nunc. Sed id ante eu orci
+                                 commodo volutpat non ac est.
+                             </p>
+                         </div>
+                     </md-tab>
+                     <md-tab label="devices">
+                         <div class="md-padding">
+                             <h2 class="md-display-1">Connected Devices</h2>
+                             <p class="md-body-1">
+                                 Integer turpis erat, porttitor vitae mi faucibus, laoreet interdum tellus. Curabitur
+                                 posuere molestie dictum. Morbi eget congue risus, quis rhoncus quam. Suspendisse
+                                 vitae hendrerit erat, at posuere mi. Cras eu fermentum nunc. Sed id ante eu orci
+                                 commodo volutpat non ac est.
+                             </p>
+                         </div>
+                     </md-tab>
+                 </md-tabs>
+             </md-card>-->
+        </div>
+
+
+        <div flex="25" layout="column" ng-show="showPlaylists">
+            <md-card layout="column" flex>
+                <md-tabs class="md-primary" layout-fill="">
+                    <md-tab label="Playlists" layout="column" >
+                        <md-button class="md-fab md-mini md-raised" style="position: absolute; right: 9px;" ng-click="addPlaylist($event)">
+                            <md-icon>add</md-icon>
+                        </md-button>
+
+                        <md-button class="md-fab md-fab-bottom-right" ng-show="showPlaylists" style="position: fixed" ng-click="addNode(editMovie)">
+                            <md-icon>add</md-icon>
+                        </md-button>
+
+                        <md-input-container md-theme="input-dark" style="margin-bottom: 0; margin-left: 9px; width: 94%;">
+                            <label>Search</label>
+                            <input ng-model="searchPlaylist"/>
+                        </md-input-container>
+                        <md-list style="overflow-y: scroll">
+                            <md-list-item class="md-2-line" ng-class="{ 'nav-active': playlistIdToEdit === playlist._id }" ng-click="changePlaylist(playlist._id)" ng-repeat="playlist in playlistListData | orderBy: '-createdAt' | filter: searchPlaylist">
+                                <div class="md-list-item-text">
+                                    <h3>{{playlist.title}}</h3>
+                                    <p>
+
+                                    </p>
+                                    <!-- <md-button class="md-mini md-fab md-raised md-warn" ng-click="deletePlaylist(playlist._id)" style="position: absolute; top:0; right: 0">
+                                         <md-icon>delete</md-icon>
+                                     </md-button>-->
+                                </div>
+                            </md-list-item>
+                        </md-list>
+                    </md-tab>
+
+
+                    <md-tab label="Songs" layout="column" layout-fill="">
+                        <md-list style="margin-bottom: 16px; padding: 0">
+                            <md-list-item class="md-3-line" ng-repeat="song in songsData | orderBy: '-createdAt'" ng-click="addNode(song)">
+                                <div class="md-list-item-text" layout="row" style="margin-top: 18px">
+                                    <img src="/export/imgs/{{song._id}}.png" width="90" height="90" style="margin-right: 10px;"/>
+                                    <div layout="column" style="margin-top: 9px">
+                                        <h3>{{song.path}}</h3>
+                                        <md-chips id="songs-tags" flex ng-model="song.tags" style="height: 90px; outline: none" md-removable="false" readonly="true"></md-chips>
+                                    </div>
+                                </div>
+                            </md-list-item>
+                        </md-list>
+                    </md-tab>
+                </md-tabs>
+
+
+
+            </md-card>
+        </div>
+
+
+
+    </div>
+
+
+
+
+</div>

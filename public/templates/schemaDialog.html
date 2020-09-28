@@ -1,0 +1,12 @@
+<md-dialog aria-label="Schema">
+    <md-toolbar>
+        <div class="md-toolbar-tools">
+            <h2>{{schemaName}} schema model</h2>
+            <span flex></span>
+        </div>
+    </md-toolbar>
+
+    <md-content>
+        <pre>{{schemaData | prettyJSON}}</pre>
+    </md-content>
+</md-dialog>

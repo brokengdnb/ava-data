@@ -1,0 +1,38 @@
+<md-dialog aria-label="Import CSV">
+
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h2>Import CSV songs into playlist:</h2>
+                <span flex></span>
+                <md-button class="md-icon-button" ng-click="hide()">
+                    <i class="material-icons">close</i>
+                </md-button>
+            </div>
+        </md-toolbar>
+
+        <md-dialog-content layout="column">
+            <div layout="row" layout-padding="" flex>
+                <md-input-container flex>
+                    <label>Title</label>
+                    <input ng-model="entry.title" ng-keyup="$event.keyCode == 13 ? save() : null"/>
+                </md-input-container>
+
+                <md-button ng-click="save()" class="md-raised md-accent" >
+                    <i class="material-icons" style="color:white">add</i>
+                </md-button>
+            </div>
+
+            <md-list style="overflow-y: auto">
+                <md-list-item class="md-1-line" ng-click="choosePlaylist(playlist)" ng-repeat="playlist in playlists | orderBy: '-createdAt'">
+                    <div class="md-list-item-text">
+                        <h3>{{playlist.title}}</h3>
+
+                    </div>
+                </md-list-item>
+            </md-list>
+        </md-dialog-content>
+
+
+
+
+</md-dialog>

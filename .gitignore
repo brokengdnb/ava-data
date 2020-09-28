@@ -1,13 +1,14 @@
-public/bower_components/
 node_modules/
 .idea/
 package-lock.json
+
+export
+import
 
 
 # Created by https://www.gitignore.io/api/node,macos,bower,webstorm
 # Edit at https://www.gitignore.io/?templates=node,macos,bower,webstorm
 
-upload
 ytdl
 
 ### Bower ###
@@ -122,7 +123,6 @@ typings/
 .nuxt
 
 # react / gatsby 
-public/
 
 # vuepress build output
 .vuepress/dist

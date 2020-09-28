@@ -1,0 +1,124 @@
+<div ng-controller="indexCtrl" flex>
+    <div flex layout="row" layout-fill="" layout-xs="column">
+        <div layout="column" layout-align="space-between" flex-xs="100" flex-sm-gt="15">
+            <md-card flex md-whiteframe="10">
+
+                <md-tabs class="md-primary" layout-fill="" md-center-tabs>
+                    <md-tab label="Notes" layout-fill="" >
+                        <div layout-fill="" >
+
+                            <md-button class="md-fab md-fab-bottom-left md-raised md-accent" ng-click="goToPage('/search')">
+                                <md-icon>add</md-icon>
+                            </md-button>
+
+                            <md-list layout-fill="">
+                                <md-list-item class="md-2-line" ng-repeat="note in notesData">
+                                    <img ng-src="/uploads/{{note.youtubeID}}.png" style="width: 60px; height: 60px;position:absolute; right: 20px; border-radius: 50%; margin-top: 8px;" />
+
+                                    <div class="md-list-item-text">
+                                        <h3>{{note.youtubeTitle}}</h3>
+                                        <p>
+                                            {{note.youtubeArtist}}
+                                        </p>
+
+                                        <md-button class="md-mini md-fab md-raised md-warn" ng-click="delete(note._id)" style="position: absolute; top:0; right: 0">
+                                            <md-icon>delete</md-icon>
+                                        </md-button>
+                                    </div>
+                                </md-list-item>
+                            </md-list>
+                        </div>
+                    </md-tab>
+                    <md-tab label="two">
+                        <md-content layout-fill="">
+                            <div>
+                                <textarea id=input_output></textarea>
+                                <input type="button" id="import_button" ng-click="importNetwork()" value="import"></input>
+                                <input type="button" id="export_button" ng-click="exportNetwork()" value="export"></input>
+                                <input type="button" id="destroy_button" ng-click="destroyNetwork()" value="destroy"></input>
+                            </div>
+
+
+                        </md-content>
+                    </md-tab>
+                    <md-tab label="three">
+                        <md-content class="md-padding">
+                            <h2 class="md-display-1">Tab Three</h2>
+                            <p class="md-body-1">
+                                Integer turpis erat, porttitor vitae mi faucibus, laoreet interdum tellus. Curabitur
+                                posuere molestie dictum. Morbi eget congue risus, quis rhoncus quam. Suspendisse
+                                vitae hendrerit erat, at posuere mi. Cras eu fermentum nunc. Sed id ante eu orci
+                                commodo volutpat non ac est.
+                            </p>
+                        </md-content>
+                    </md-tab>
+                </md-tabs>
+
+
+
+
+            </md-card>
+
+            <md-card md-whiteframe="10">
+                <form>
+                    <md-toolbar>
+                        <div class="md-toolbar-tools">
+                            <h2>Database</h2>
+                            <span flex></span>
+                        </div>
+                    </md-toolbar>
+
+                    <div>
+                        <div layout="row" flex>
+                            <md-button flex class="md-primary md-raised" ng-click="generate()">
+                                Backup
+                            </md-button>
+
+                            <md-button flex class="md-primary md-accent md-raised" type="submit" form="backUpForm" ng-disabled="!file" ng-click="upload()">
+                                Restore
+                            </md-button>
+
+                            <md-button flex class="md-primary md-warn md-raised" ng-click="delete()">
+                                Delete
+                            </md-button>
+                        </div>
+
+                        <div flex="100" layout-align="center" layout="column" class="md-dialog-content" layout-padding="">
+                            <input type="file" file="file" name="file"/>
+                        </div>
+                    </div>
+                </form>
+            </md-card>
+        </div>
+
+        <div layout="column" layout-fill="">
+            <md-card flex flex-sm-gt="80" md-whiteframe="10" style="outline: none">
+
+                <div id="mynetwork" style="outline: none"></div>
+
+            </md-card>
+
+            <md-card flex-sm-gt="80" md-whiteframe="10">
+                <md-toolbar>
+                    <div class="md-toolbar-tools">
+                        <h2>Collections</h2>
+                        <span flex></span>
+
+                    </div>
+
+                </md-toolbar>
+
+                <md-list>
+                    <md-list-item class="md-2-line" ng-repeat="collectionsData in collectionsDatas" ng-click="schemaDialog($event, collectionsData.name | capitalize)">
+                        <div class="md-list-item-text">
+                            <h3>{{collectionsData.name | capitalize}} [{{collectionsData.type}}]</h3>
+                            <p>
+                                {{collectionsData.info}}
+                            </p>
+                        </div>
+                    </md-list-item>
+                </md-list>
+            </md-card>
+        </div>
+    </div>
+</div>

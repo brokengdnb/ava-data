@@ -1,0 +1,463 @@
+<div ng-controller="songsCtrl" flex layout="column" layout-fill="" style="overflow: hidden !important;">
+
+
+
+
+    <div flex layout="row" layout-fill="" layout-xs="column">
+        <!--<md-button md-whiteframe="10" aria-label="menu" ng-click="downloadAll()"  class="md-fab md-fab-bottom-right">
+            <md-icon aria-label="all" style="color:black">done_all</md-icon>
+        </md-button>
+
+        <md-button md-whiteframe="10" aria-label="menu" ng-click="downloadVideo()"  class="md-fab md-raised md-fab-bottom-right" style="margin-right: 90px">
+            <md-icon aria-label="movie" style="color:black">movie</md-icon>
+        </md-button>
+
+        <md-button md-whiteframe="10" aria-label="menu" ng-click="downloadAudio()" class="md-fab md-raised md-fab-bottom-right" style="margin-right: 172px">
+            <md-icon aria-label="music" style="color:black">music_note</md-icon>
+        </md-button>-->
+
+
+        <div layout="column" layout-align="space-between" flex ng-hide="showPlaylists">
+
+            <md-card md-whiteframe="10" flex layout="column">
+
+                <md-tabs class="md-primary" layout-fill="">
+                    <md-tab label="Import" layout="column" layout-fill="" >
+
+                        <md-list style="padding: 0">
+                            <md-list-item ng-hide="local.name === '.DS_Store' || local.name === 'tn.png'" class="md-2-line" ng-repeat="local in localList" ng-click="getVideoInfo(local)">
+                                <div class="md-list-item-text">
+                                    <h3>{{local.name}}</h3>
+                                    <p>{{local.extension}} - {{formatBytes(local.fileSizeInBytes)}}</p>
+                                </div>
+                            </md-list-item>
+                        </md-list>
+
+                    </md-tab>
+
+                    <md-tab label="Songs" layout="column" layout-fill="">
+                        <md-list style="margin-bottom: 16px; padding: 0">
+                            <md-list-item class="md-3-line" ng-repeat="song in notesData | orderBy: '-createdAt'" ng-click="getSongInfo(local)">
+                                <div class="md-list-item-text" layout="row" style="margin-top: 18px">
+                                    <img src="/export/imgs/{{song._id}}.png" width="90" height="90" style="margin-right: 10px;"/>
+                                    <div layout="column" style="margin-top: 9px">
+                                        <md-button class="md-mini md-fab md-raised md-warn" ng-click="deleteSong(song._id)" style="position: absolute; top:0; right: 0">
+                                            <md-icon>delete</md-icon>
+                                        </md-button>
+                                        <h3>{{song.path}}</h3>
+                                        <md-chips id="effects-list" flex ng-model="song.tags" style="height: 90px; outline: none" md-removable="false" readonly="true"></md-chips>
+                                    </div>
+                                </div>
+                            </md-list-item>
+                        </md-list>
+
+                    </md-tab>
+
+                </md-tabs>
+
+
+
+               <!-- <md-list>
+                    <md-list-item class="md-2-line" ng-repeat="yt in youtubeDataSorted">
+                        <div class="md-list-item-text" ng-click="showVideo(yt)" style="border: none; outline: none">
+
+                            <h3>{{yt.data.snippet.title}}</h3>
+
+
+                            <div layout="row">
+                                <div layout-padding="">
+                                    <img src="{{yt.data.snippet.thumbnails.default.url}}" width="100px"/>
+                                </div>
+
+                                <div layout-padding="">
+                                    <p>{{numberWithSpaces(yt.data.statistics.viewCount)}}</p>
+                                    <h3>{{youtubeDurationToSeconds(yt.data.contentDetails.duration) | secondsToHHmmss}}</h3>
+                                </div>
+                            </div>
+
+
+                            &lt;!&ndash;
+                                                        <h4>{{duration_for(youtubeDurationToSeconds(yt.data.contentDetails.duration))}}</h4>
+                            &ndash;&gt;
+
+                        </div>
+                    </md-list-item>
+                </md-list>-->
+
+            </md-card>
+
+
+        </div>
+
+        <div layout="column" flex="75" ng-show="mainPanel">
+            <md-progress-linear ng-show="determinateValue" class="md-warn" md-mode="buffer" style="margin-top: 9px" value="{{determinateValue}}"
+                                md-buffer-value="{{determinateValue}}"></md-progress-linear>
+
+            <div layout="row">
+                <md-card md-whiteframe="10" flex layout="column" style="max-height: 148px; max-width: 300px">
+                    <section class="container">
+
+                        <section class="droplet" ng-class="{ uploading: interface.isUploading() }">
+
+                            <section class="toolbar">
+
+                                <input type="button" class="button upload-files" value="Upload Files"
+                                       ng-click="interface.uploadFiles()"
+                                       ng-hide="interface.isUploading()"
+                                       ng-class="{ clickable: interface.isReady() }" />
+
+                                <input type="button" class="button upload-files" value="Uploading..." ng-show="interface.isUploading()" />
+
+                                <div class="add-files">
+                                    <input type="button" class="button add-files" value="Add Files..." />
+                                    <droplet-upload-multiple ng-model="interface"></droplet-upload-multiple>
+                                </div>
+
+                                <comment class="progress" ng-class="{ visible: interface.isUploading() }">
+                                    Uploaded: {{interface.progress.percent}}%
+                                </comment>
+
+                            </section>
+
+                            <ul class="statistics" style="margin-top: 3px;margin-bottom: 3px;padding-left: 0; text-align: center">
+                                <li><label>Valid:</label> {{interface.getFiles(interface.FILE_TYPES.VALID).length}}</li>
+                                <li><label>Invalid:</label> {{interface.getFiles(interface.FILE_TYPES.INVALID).length}}</li>
+                                <li><label>Uploaded:</label> {{interface.getFiles(interface.FILE_TYPES.UPLOADED).length}}</li>
+                                <li><label>Deleted:</label> {{interface.getFiles(interface.FILE_TYPES.DELETED).length}}</li>
+                                <li><label>Total:</label> {{interface.getFiles().length}}</li>
+                            </ul>
+
+
+
+                            <droplet ng-model="interface">
+
+                                <div class="loading" ng-class="{ visible: interface.isUploading() }">
+                                    {{interface.progress.percent}}
+                                </div>
+
+                                <comment></comment>
+
+                                <ul class="files">
+                                    <li ng-repeat="model in interface.getFiles(interface.FILE_TYPES.VALID)">
+                                        <div class="name">{{model.file.name}}</div>
+                                        <div class="delete" ng-click="model.deleteFile()">&times;</div>
+                                        <div class="size">{{model.file.size / 1024 / 1024 | number: 1}}MB</div>
+                                    </li>
+
+                                </ul>
+
+                            </droplet>
+
+                        </section>
+
+                    </section>
+                </md-card>
+
+                <md-card md-whiteframe="10" style="max-height: 148px;width: 148px; ">
+                   <img ng-src="{{dataPost.imgCover}}" width="148" height="148px"/>
+                </md-card>
+
+                <md-card flex md-whiteframe="10" flex layout="column">
+
+                    <div layout-padding="">
+                        <div layout="row" flex style="height: 64px">
+                            <md-input-container md-theme="input-dark" style="margin-bottom: 0; width: 28px">
+                                <label>Ch</label>
+                                <input value="{{dataPost.ffmpeg.format.numberOfChannels}}" ng-disabled="true"/>
+                            </md-input-container>
+                            <md-input-container md-theme="input-dark" style="margin-bottom: 0; width: 75px">
+                                <label>Rate</label>
+                                <input value="{{formatRate(dataPost.ffmpeg.format.sampleRate)}}" ng-disabled="true"/>
+                            </md-input-container>
+                            <md-input-container md-theme="input-dark" style="margin-bottom: 0; max-width: 99px" >
+                                <label>Bitrate</label>
+                                <input value="{{formatBitrate(dataPost.ffmpeg.format.bitrate)}}" ng-disabled="true"/>
+                            </md-input-container>
+                           <!-- <md-input-container flex md-theme="input-dark" style="">
+                                <label>Container</label>
+                                <input ng-model="dataPost.ffmpeg.format.container"/>
+                            </md-input-container>-->
+                            <md-input-container md-theme="input-dark" ng-if="dataPost.ffmpeg.format.codecProfile" style="margin-bottom: 0; width: 45px">
+                                <label>Profile</label>
+                                <input value="{{dataPost.ffmpeg.format.codecProfile}}" ng-disabled="true"/>
+                            </md-input-container>
+
+                            <md-input-container md-theme="input-dark" flex style="margin-bottom: 0;">
+                                <label>Codec</label>
+                                <input value="{{dataPost.ffmpeg.format.codec}}" ng-disabled="true"/>
+                            </md-input-container>
+                        </div>
+
+                        <div layout="row" style="height: 68px">
+                            <md-input-container md-theme="input-dark" style="width: 33px">
+                                <label>BPM</label>
+                                <input ng-model="dataPost.ffmpeg.common.bpm"/>
+                            </md-input-container>
+                            <md-input-container md-theme="input-dark" style="width: 52px">
+                                <label>Key</label>
+                                <input ng-model="dataPost.ffmpeg.common.key">
+                            </md-input-container>
+                            <md-input-container md-theme="input-dark" style="width: 52px">
+                                <label>Time</label>
+                                <input ng-model="dataPost.duration" ng-disabled="true"/>
+                            </md-input-container>
+                            <md-input-container md-theme="input-dark" style="width: 72px">
+                                <label>Size</label>
+                                <input ng-model="dataPost.size" ng-disabled="true">
+                            </md-input-container>
+                            <md-input-container flex md-theme="input-dark" style="">
+                                <label>Path</label>
+                                <input ng-model="dataPost.path"/>
+                            </md-input-container>
+                        </div>
+
+                    </div>
+                </md-card>
+
+            </div>
+
+
+
+            <md-card md-whiteframe="10" flex layout-padding="" >
+                <div layout="row">
+                    <croppie ng-show="imageSource" style="width: 300px;height: 200px; display: block;max-width: 100%; margin-bottom: 36px" src="imageSource" ng-model="dataPost.imgCover" options="croppedOption"></croppie>
+
+                    <div layout="column" layout-fill="" layout-padding="">
+
+
+
+                        <div layout="row">
+                            <md-input-container  md-theme="input-dark" style="width: 26px">
+                                <label>N.</label>
+                                <input ng-model="dataPost.ffmpeg.common.track.no" ng-disabled="disableInputs"/>
+                            </md-input-container>
+                            <md-input-container  md-theme="input-dark" style="width: 42px">
+                                <label>Year</label>
+                                <input ng-model="dataPost.ffmpeg.common.year" ng-disabled="disableInputs"/>
+                            </md-input-container>
+                            <md-input-container md-theme="input-dark">
+                                <label>Genre</label>
+                                <input ng-model="dataPost.ffmpeg.common.genre" ng-disabled="disableInputs"/>
+                            </md-input-container>
+                            <md-input-container flex md-theme="input-dark">
+                                <label>Artist</label>
+                                <input ng-model="dataPost.ffmpeg.common.artist" ng-disabled="disableInputs"/>
+                            </md-input-container>
+                            <md-input-container flex md-theme="input-dark">
+                                <label>Title</label>
+                                <input ng-model="dataPost.ffmpeg.common.title" ng-disabled="disableInputs"/>
+                            </md-input-container>
+                            <md-input-container md-theme="input-dark">
+                                <label>Album</label>
+                                <input ng-model="dataPost.ffmpeg.common.album" ng-disabled="disableInputs"/>
+                            </md-input-container>
+                        </div>
+
+                        <div layout="row">
+                            <md-input-container md-theme="input-dark">
+                                <label>Shape Vis.JS</label>
+                                <input ng-model="dataPost.shape" ng-disabled="disableInputs"/>
+                            </md-input-container>
+                        </div>
+
+
+                        <md-chips md-theme="input-dark" flex placeholder="Tags" ng-model="dataPost.tags"></md-chips>
+
+                    </div>
+
+                    <md-button class="md-fab md-fab-bottom-left md-warn" style="" ng-click="deleteImportedSong(dataPost)" ng-if="canBeOriginalDeleted">
+                        <md-icon>delete</md-icon>
+                    </md-button>
+
+                    <md-button md-whiteframe="10" aria-label="menu" ng-click="convertAll()"  class="md-fab md-fab-bottom-right">
+                        <md-icon aria-label="all" style="color:black">done_all</md-icon>
+                    </md-button>
+
+
+
+
+                <!-- <md-toolbar>
+                     <div class="md-toolbar-tools">
+                         <h2>Stream</h2>
+                         <span flex></span>
+                     </div>
+                 </md-toolbar>-->
+                <!--
+
+                                <canvas id="video-canvas" layout-fill=""></canvas>
+
+
+                                <canvas id="videoElement" width=640 height=480></canvas>
+
+                 <video id="videoElement" autoplay controls style="width: 100%"></video>
+
+                               -->
+
+               <!-- <div layout="column" layout-align="center">
+                    <div layout="row" layout-align="space-between start">
+                        <div id="ytplayer" md-whiteframe="5"></div>
+                        <div style="width: 300px; height: 200px;" layout="column" layout-align="center center">
+                            <md-button>Download</md-button>
+                            <img ng-src="{{dataPost.imgCover}}" ng-click="reloadImg()" ng-show="youtubeImage" style="width: 100px;height: 100px; border-radius: 50%; margin-top: -9px; cursor: alias"/>
+                        </div>
+                        <div layout="row" layout-align="center center" ng-hide="youtubeImage" style="width: 300px; height: 200px;">
+                            <md-progress-circular class="md-warn" md-mode="indeterminate"></md-progress-circular>
+                        </div>
+                        <croppie md-whiteframe="5" ng-show="youtubeImage" style="width: 300px;height: 200px; display: block;max-width: 100%;" src="youtubeImage" ng-model="dataPost.imgCover" options="croppedOption"></croppie>
+                    </div>
+                    <div layout="column" style="margin-top: 64px" >
+                        <div layout="row" flex>
+                            <md-input-container flex="50" md-theme="input-dark">
+                                <label>Original</label>
+                                <input ng-model="dataPost.content" ng-disabled="disableInputs"/>
+                            </md-input-container>
+                            <md-input-container flex md-theme="input-dark">
+                                <label>ID</label>
+                                <input ng-model="dataPost.youtubeID" ng-disabled="disableInputs" ng-change="changeIDInput()" ng-model-options='{ debounce: 1000 }' ng-keyup="$event.keyCode == 13 ? changeIDInput() : null"/>
+                            </md-input-container>
+                            <md-input-container flex md-theme="input-dark">
+                                <label>Year</label>
+                                <input ng-model="dataPost.youtubeYear" ng-disabled="disableInputs"/>
+                            </md-input-container>
+
+
+                        </div>
+
+
+                        <div layout="row" flex style="margin-top: 69px">
+
+                            <md-input-container flex md-theme="input-dark">
+                                <label>Artist</label>
+                                <input ng-model="dataPost.youtubeArtist" ng-disabled="disableInputs"/>
+                            </md-input-container>
+                            <md-input-container flex md-theme="input-dark">
+                                <label>Title</label>
+                                <input ng-model="dataPost.youtubeTitle" ng-disabled="disableInputs"/>
+                            </md-input-container>
+                            <md-input-container flex md-theme="input-dark">
+                                <label>Genre</label>
+                                <input ng-model="dataPost.youtubeGenre" ng-disabled="disableInputs"/>
+                            </md-input-container>
+                            <md-input-container flex md-theme="input-dark">
+                                <label>Album</label>
+                                <input ng-model="dataPost.youtubeAlbum" ng-disabled="disableInputs"/>
+                            </md-input-container>
+
+                        </div>
+
+
+                    </div>
+                    <div layout-padding="" style="position: absolute; bottom: 0; width: 50%">
+                        <md-chips md-theme="input-dark" flex placeholder="Tags" ng-model="dataPost.youtubeTags" md-removable="!disableInputs" readonly="disableInputs"></md-chips>
+                    </div>
+                </div>-->
+                </div>
+            </md-card>
+
+            <!-- <md-card flex-sm-gt="50" md-whiteframe="10">
+                 <md-tabs class="md-primary" md-center-tabs md-dynamic-height md-swipe-content md-align-tabs="bottom">
+                     <md-tab label="hidden">
+                         <span> </span>
+                     </md-tab>
+                     <md-tab label="controls">
+                         <div class="md-padding">
+
+
+                             <input id="play" type="button" value="Play" ng-click="playback(this)"/>
+                             <br />
+                             <textarea id="log" rows="8"></textarea>
+
+                         </div>
+                     </md-tab>
+                     <md-tab label="effects">
+                         <div class="md-padding">
+                             <h2 class="md-display-1">Tab Three</h2>
+                             <p class="md-body-1">
+                                 Integer turpis erat, porttitor vitae mi faucibus, laoreet interdum tellus. Curabitur
+                                 posuere molestie dictum. Morbi eget congue risus, quis rhoncus quam. Suspendisse
+                                 vitae hendrerit erat, at posuere mi. Cras eu fermentum nunc. Sed id ante eu orci
+                                 commodo volutpat non ac est.
+                             </p>
+                         </div>
+                     </md-tab>
+                     <md-tab label="devices">
+                         <div class="md-padding">
+                             <h2 class="md-display-1">Connected Devices</h2>
+                             <p class="md-body-1">
+                                 Integer turpis erat, porttitor vitae mi faucibus, laoreet interdum tellus. Curabitur
+                                 posuere molestie dictum. Morbi eget congue risus, quis rhoncus quam. Suspendisse
+                                 vitae hendrerit erat, at posuere mi. Cras eu fermentum nunc. Sed id ante eu orci
+                                 commodo volutpat non ac est.
+                             </p>
+                         </div>
+                     </md-tab>
+                 </md-tabs>
+             </md-card>-->
+        </div>
+
+        <div flex="25" layout="column" ng-show="showPlaylists">
+            <md-card layout="column" flex>
+                <md-tabs class="md-primary" layout-fill="">
+                    <md-tab label="Playlists" layout="column" >
+                        <md-button class="md-fab md-mini md-raised" style="position: absolute; right: 9px;" ng-click="addPlaylist($event)">
+                            <md-icon>add</md-icon>
+                        </md-button>
+                        <md-input-container md-theme="input-dark" style="margin-bottom: 0; margin-left: 9px; width: 94%;">
+                            <label>Search</label>
+                            <input ng-model="searchPlaylist"/>
+                        </md-input-container>
+                        <md-list style="overflow-y: scroll">
+                            <md-list-item class="md-2-line" ng-class="{ 'nav-active': playlistIdToEdit === playlist._id }" ng-click="changePlaylist(playlist._id)" ng-repeat="playlist in playlistListData | orderBy: '-createdAt' | filter: searchPlaylist">
+                                <div class="md-list-item-text">
+                                    <h3>{{playlist.title}}</h3>
+                                    <p>
+
+                                    </p>
+                                    <!-- <md-button class="md-mini md-fab md-raised md-warn" ng-click="deletePlaylist(playlist._id)" style="position: absolute; top:0; right: 0">
+                                         <md-icon>delete</md-icon>
+                                     </md-button>-->
+                                </div>
+                            </md-list-item>
+                        </md-list>
+                    </md-tab>
+
+
+                    <md-tab label="Songs" layout="column" layout-fill="">
+                        <md-list style="margin-bottom: 16px; padding: 0">
+                            <md-list-item class="md-3-line" ng-repeat="song in songsData | orderBy: '-createdAt'" ng-click="addNode(song)">
+                                <div class="md-list-item-text" layout="row" style="margin-top: 18px">
+                                    <img src="/export/imgs/{{song._id}}.png" width="90" height="90" style="margin-right: 10px;"/>
+                                    <div layout="column" style="margin-top: 9px">
+                                        <h3>{{song.path}}</h3>
+                                        <md-chips id="songs-tags" flex ng-model="song.tags" style="height: 90px; outline: none" md-removable="false" readonly="true"></md-chips>
+                                    </div>
+                                </div>
+                            </md-list-item>
+                        </md-list>
+                    </md-tab>
+                </md-tabs>
+
+
+
+            </md-card>
+        </div>
+
+
+            <div layout="column" flex>
+                <md-button md-whiteframe="10" aria-label="menu" ng-click="saveNode()" class="md-fab md-fab-top-right">
+                    <md-icon aria-label="all" style="color:black">save</md-icon>
+                </md-button>
+
+
+                <md-card flex md-whiteframe="10" style="outline: none">
+                    <div id="playlistsNetwork" style="outline: none; width: 100%; height: 100%" ></div>
+                </md-card>
+            </div>
+
+
+
+
+    </div>
+
+
+</div>
