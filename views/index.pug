@@ -17,7 +17,8 @@ html(lang="en")
         +links([
             "/bower_components/angular-material/angular-material.min.css",
             "/styles/main.css",
-            "/styles/croppie.css"
+            "/styles/croppie.css",
+            "/styles/vis.css"
         ])
 
         +scriptsBowerAngular([
@@ -30,20 +31,34 @@ html(lang="en")
             "angular-route",
         ])
 
+
+        // //"//cdn.bootcss.com/flv.js/1.5.0/flv.min.js",
+
         +scripts([
             "/bower_components/angular-youtube-api-factory/dist/angular-youtube-api-factory.min.js",
-            "//cdn.bootcss.com/flv.js/1.5.0/flv.min.js",
             "/scripts/WSAvcPlayer.js",
+            "/scripts/ng-droplet.min.js",
+            "/scripts/progressbar.min.js",
             "/scripts/NodePlayer.js",
             "/scripts/croppie.min.js",
             "/scripts/angular-croppie.js",
             "/scripts/socket.io.slim.js",
             "/scripts/ua-parser.min.js",
             "/scripts/jquery.min.js",
+            "/scripts/vis.js",
             "/scripts/app.js",
             "/scripts/index/component.js",
             "/scripts/search/component.js",
-            "/scripts/save/component.js"
+            "/scripts/saveAudio/component.js",
+            "/scripts/saveVideo/component.js",
+            "/scripts/local/component.js",
+            "/scripts/move/component.js",
+            "/scripts/home/component.js",
+            "/scripts/movie/component.js",
+            "/scripts/songs/component.js",
+            "/scripts/effects/component.js",
+            "/scripts/csv/component.js",
+            "/scripts/playlists/component.js"
         ])
     body(ng-app="ngApp")
         div(ng-view)

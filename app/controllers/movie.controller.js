@@ -1,25 +1,22 @@
-const Note = require('../models/note.model.js');
+const Movie = require('../models/movie.model.js');
 
 // Create and Save a new Note
 exports.create = (req, res) => {
     // Validate request
     // Create a Note
-    const note = new Note({
-        title: req.body.title || "Untitled Note", 
-        youtubeArtist: req.body.youtubeArtist,
-        youtubeTitle: req.body.youtubeTitle,
-        youtubeYear: req.body.youtubeYear,
-        youtubeID: req.body.youtubeID,
-        youtubeTags: req.body.youtubeTags,
-        youtubeGenre: req.body.youtubeGenre,
-        youtubeAlbum: req.body.youtubeAlbum,
-        favourite: req.body.favourite,
-        lastTimePlayed: 0,
-        shape: req.body.shape
+    const movie = new Movie({
+        title: req.body.title || "Untitled Movie",
+        year: req.body.year,
+        tags: req.body.tags,
+        size: req.body.size,
+        genre: req.body.genre,
+        duration: req.body.duration,
+        streams: req.body.streams,
+        path: req.body.path,
     });
 
     // Save Note in the database
-    note.save()
+    movie.save()
     .then(data => {
         res.send(data);
     }).catch(err => {
@@ -31,7 +28,7 @@ exports.create = (req, res) => {
 
 // Retrieve and return all notes from the database.
 exports.findAll = (req, res) => {
-    Note.find()
+    Movie.find()
     .then(notes => {
         res.send(notes);
     }).catch(err => {
@@ -43,22 +40,22 @@ exports.findAll = (req, res) => {
 
 // Find a single note with a noteId
 exports.findOne = (req, res) => {
-    Note.findById(req.params.noteId)
+    Movie.findById(req.params.movieId)
     .then(note => {
         if(!note) {
             return res.status(404).send({
-                message: "Note not found with id " + req.params.noteId
+                message: "Note not found with id " + req.params.movieId
             });            
         }
         res.send(note);
     }).catch(err => {
         if(err.kind === 'ObjectId') {
             return res.status(404).send({
-                message: "Note not found with id " + req.params.noteId
+                message: "Note not found with id " + req.params.movieId
             });                
         }
         return res.status(500).send({
-            message: "Error retrieving note with id " + req.params.noteId
+            message: "Error retrieving note with id " + req.params.movieId
         });
     });
 };
@@ -69,57 +66,53 @@ exports.update = (req, res) => {
 
 
     // Find note and update it with the request body
-    Note.findByIdAndUpdate(req.params.noteId, {
-        title: req.body.title || "Untitled Note",
-        content: req.body.content,
-        lastTime: req.body.lastTime,
-        lastTimePlayed: req.body.lastTimePlayed,
-        youtubeArtist: req.body.youtubeArtist,
-        youtubeTitle: req.body.youtubeTitle,
-        youtubeYear: req.body.youtubeYear,
-        youtubeID: req.body.youtubeID,
-        youtubeTags: req.body.youtubeTags,
-        youtubeGenre: req.body.youtubeGenre,
-        youtubeAlbum: req.body.youtubeAlbum,
-        favourite: req.body.favourite
+    Movie.findByIdAndUpdate(req.params.movieId, {
+        title: req.body.title || "Untitled Movie",
+        year: req.body.year,
+        tags: req.body.tags,
+        size: req.body.size,
+        genre: req.body.genre,
+        duration: req.body.duration,
+        streams: req.body.streams,
+        path: req.body.path,
     }, {new: true})
     .then(note => {
         if(!note) {
             return res.status(404).send({
-                message: "Note not found with id " + req.params.noteId
+                message: "Note not found with id " + req.params.movieId
             });
         }
         res.send(note);
     }).catch(err => {
         if(err.kind === 'ObjectId') {
             return res.status(404).send({
-                message: "Note not found with id " + req.params.noteId
+                message: "Note not found with id " + req.params.movieId
             });                
         }
         return res.status(500).send({
-            message: "Error updating note with id " + req.params.noteId
+            message: "Error updating note with id " + req.params.movieId
         });
     });
 };
 
 // Delete a note with the specified noteId in the request
 exports.delete = (req, res) => {
-    Note.findByIdAndRemove(req.params.noteId)
+    Movie.findByIdAndRemove(req.params.movieId)
     .then(note => {
         if(!note) {
             return res.status(404).send({
-                message: "Note not found with id " + req.params.noteId
+                message: "Note not found with id " + req.params.movieId
             });
         }
         res.send({message: "Note deleted successfully!"});
     }).catch(err => {
         if(err.kind === 'ObjectId' || err.name === 'NotFound') {
             return res.status(404).send({
-                message: "Note not found with id " + req.params.noteId
+                message: "Note not found with id " + req.params.movieId
             });                
         }
         return res.status(500).send({
-            message: "Could not delete note with id " + req.params.noteId
+            message: "Could not delete note with id " + req.params.movieId
         });
     });
 };
