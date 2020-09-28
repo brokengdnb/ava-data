@@ -1,43 +1,19 @@
-
----
-
 > ...ok so let's create a decent REST API database, with pre/post custom manipulation suited up in Material Design UI and all of that render in 2D map of songs to play seamless mix as a DJ as well as VDJ at once... at glance, not so hard to image but fucking loooong way to take that to reality and here we are...
 
-[![preview](https://github.com/brokengdnb/ava-data/blob/master/demo.png?raw=true "preview")](https://github.com/brokengdnb/me "preview")
+[![preview](https://github.com/brokengdnb/ava/blob/master/about.png?raw=true "preview")](https://github.com/brokengdnb/me "preview")
 
 ---
 
+- [Index](#index.html)
 - [Demo](#demo)
 - [Downloads](#downloads)
 - [Compilation](#compilation)
-- [Index](#index)
 - [License](#license)
 
 
+## Index.html
 
-## Demo
-
-
-## Downloads
-
-- [AVA-1.0.zip (~70MB)](https://github.com/brokengdnb/ava-data/releases/tag/v1)
-
-> MD5
-- ...
-
-## Compilation
-
-```bash
-git clone https://github.com/brokengdnb/ava-data && cd ava-data/
-npm install
-bower install
-npm run start
-```
-> simple as that...
-
-## Index
-
-It's beauty just... so simple and so open for complexity:
+It's sooo beauty just... so simple and so open for more complexity, plugins, pages and more:
 
 ```jade
 mixin links(names)
@@ -101,13 +77,69 @@ html(lang="en")
         ])
     body(ng-app="ngApp")
         div(ng-view)
+
 ```
 
+As you can see in a "body" tag I'm using just one element and that render whole aplication in one page, then it depands and also the app will request only what is needed at that request. Then all requests are split between front & back end.
+
+```javascript
+// definition of front-end routers:
+$routeProvider.
+when('/', {
+	template: '<home></home>',
+	activetab: 'home',
+	activename: 'Home',
+	reloadOnSearch : false
+}).
+when('/search', {
+	template: '<search></search>',
+	activetab: 'search',
+	activename: 'Search',
+	reloadOnSearch : false
+}).
+when('/index', {
+	// etc... and then back-end API factory
+
+.factory('Songs',
+	function($resource) {
+		return $resource('/api/songs/:id', {id: '@_id'}, {
+			'query':  {method:'GET', isArray:true},
+			'get':    {method:'GET'},
+			'update': {method:'PUT'},
+			'save':   {method:'POST'},
+			'remove': {method:'DELETE'},
+			'delete': {method:'DELETE'}
+		});
+	}
+).factory('Effects',
+// etc...
+```
+I tried to keep default model MVC and rendering custom templates on a go as well.
 
 
-## Documentation
+[![preview](https://github.com/brokengdnb/ava-data/blob/master/mvc.png?raw=true "preview")](https://github.com/brokengdnb/ava-data "preview")
 
-Does not exist, code is teriible without comments and few working bugs but it works.
+
+## Demo
+
+[![demo](https://github.com/brokengdnb/me/blob/master/demo.gif?raw=true "demo")](https://github.com/brokengdnb/me "demo")
+
+## Downloads
+
+- [AVA-1.0.zip (~70MB)](https://github.com/brokengdnb/ava-data/releases/tag/v1)
+
+> MD5
+- ...
+
+## Compilation
+
+```bash
+git clone https://github.com/brokengdnb/ava-data && cd ava-data/
+npm install
+bower install
+npm run start
+```
+> simple as that...
 
 ## Support
 
@@ -121,6 +153,5 @@ Does not exist, code is teriible without comments and few working bugs but it wo
 The MIT License.
 
 Copyright (c) 2020 BrokenG
-
 
 
