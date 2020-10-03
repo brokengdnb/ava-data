@@ -1,19 +1,47 @@
-> ...ok so let's create a decent REST API database, with pre/post custom manipulation suited up in Material Design UI and all of that render in 2D map of songs to play seamless mix as a DJ as well as VDJ at once... at glance, not so hard to image but fucking loooong way to take that to reality and here we are...
+---
+layout:     post
+title:      AVA (Data)
+date:       2013-08-30
+summary:    ...just an idea in the middle of nowhere
+categories: project
+---
 
-[![preview](https://github.com/brokengdnb/ava/blob/master/about.png?raw=true "preview")](https://github.com/brokengdnb/me "preview")
+> ...ok so let's create a decent REST API database, with pre/post custom manipulation suited up in Material Design (UI) and all of that render in 2D map of songs to visualise seamless mix as a DJ as well as VDJ at once... at glance 3,2,1 and here... we... go...
 
 ---
 
-- [Index](#index.html)
 - [Demo](#demo)
-- [Downloads](#downloads)
-- [Compilation](#compilation)
+- [Code](#code)
+- [Run](#run)
+- [Index](#index)
+- [Idea](#idea)
+- [Support](#support)
 - [License](#license)
 
+## Demo
 
-## Index.html
 
-It's sooo beauty just... so simple and so open for more complexity, plugins, pages and more:
+
+## Code
+
+- [AVA-DATA-1.0.zip (~70MB)](https://github.com/brokengdnb/ava-data/releases/tag/v1)
+
+> MD5
+- ...
+
+## Run
+
+```bash
+git clone https://github.com/brokengdnb/ava-data && cd ava-data/
+npm install
+bower install
+npm run start
+```
+> just like that... and is on [http://localhost:3000/](http://localhost:3000/ "http://localhost:3000/")
+
+## Index
+
+...so simple and so open for more complexity, plugins, pages and more:
 
 ```jade
 mixin links(names)
@@ -80,7 +108,7 @@ html(lang="en")
 
 ```
 
-As you can see in a "body" tag I'm using just one element and that render whole aplication in one page, then it depands and also the app will request only what is needed at that request. Then all requests are split between front & back end.
+As you can see in a "body" tag I'm using just one element and that render whole aplication in one page, then it depands and all requests are split between front end getting data & back end doing some extra work:
 
 ```javascript
 // definition of front-end routers:
@@ -117,29 +145,57 @@ when('/index', {
 I tried to keep default model MVC and rendering custom templates on a go as well.
 
 
-[![preview](https://github.com/brokengdnb/ava-data/blob/master/mvc.png?raw=true "preview")](https://github.com/brokengdnb/ava-data "preview")
+[![MVC](https://github.com/brokengdnb/ava-data/blob/master/demo-img/mvc.png?raw=true "preview")](https://github.com/brokengdnb/ava-data/demo-img/mvc.png?raw=true "preview")
 
 
-## Demo
+as well as REST-API communications on server split on seperate models, controlers and views, you can see all details on  [http://localhost:3000/api-docs/](http://localhost:3000/api-docs/ "http://localhost:3000/api-docs/") using Swagger UI
 
-[![demo](https://github.com/brokengdnb/me/blob/master/demo.gif?raw=true "demo")](https://github.com/brokengdnb/me "demo")
+[![api](https://github.com/brokengdnb/ava-data/blob/master/demo-img/api.png?raw=true "preview")](https://github.com/brokengdnb/ava-data/demo-img/api.png "preview")
 
-## Downloads
+```javascript
+module.exports = (app) => {
+    const notes = require('../controllers/note.controller.js');
+    const cors = require('cors');
 
-- [AVA-1.0.zip (~70MB)](https://github.com/brokengdnb/ava-data/releases/tag/v1)
+    app.use(cors());
 
-> MD5
-- ...
+    // Create a new Note
+    app.post('/api/notes', notes.create);
 
-## Compilation
+    // Retrieve all Notes
+    app.get('/api/notes', notes.findAll);
 
-```bash
-git clone https://github.com/brokengdnb/ava-data && cd ava-data/
-npm install
-bower install
-npm run start
+    // Retrieve a single Note with noteId
+    app.get('/api/notes/:noteId', notes.findOne);
+
+    // Update a Note with noteId
+    app.post('/api/notes/:noteId', notes.update);
+
+    // Delete a Note with noteId
+    app.delete('/api/notes/:noteId', notes.delete);
+}
 ```
-> simple as that...
+
+## Idea
+
+So the idea is that I have 3 main elements that I would like to mix:
+ - music
+ - movies
+ - video effects
+
+That can be imported by 3 different ways:
+- online (YouTube, Soundcloud, etc.)
+- offline
+ - move
+ - convert
+
+Online is simply text to find API for getting YouTube (limit 1000 requests/day) or any other kind of media (Audio/Video) from anywhere or Offline internal import. That require specific format .mp4 with settings and parameters for seamless playing on any device (iOS, PC, Android, Television, Projectors) so If I already have that file ready from previous times I can just move it or I can create "new" one from ANY kind of file (.avi .flv .mkv. or whatever).
+
+That's individual import for each of element, once that is solved I started creating playlists. In project EMI once I get the right songs with the right effects in the right order, I'm exporting CSV file of those "files/songs" and that will get imported as well with direct connections between each other.
+
+Red dots means that song does not have image cover, by double click you can open modal and drag & drop a new cover image as well as import or edit original ID3 tags.
+
+
 
 ## Support
 
@@ -153,5 +209,3 @@ npm run start
 The MIT License.
 
 Copyright (c) 2020 BrokenG
-
-
