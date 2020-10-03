@@ -1,11 +1,3 @@
----
-layout:     post
-title:      AVA (Data)
-date:       2013-08-30
-summary:    ...just an idea in the middle of nowhere
-categories: project
----
-
 > ...ok so let's create a decent REST API database, with pre/post custom manipulation suited up in Material Design (UI) and all of that render in 2D map of songs to visualise seamless mix as a DJ as well as VDJ at once... at glance 3,2,1 and here... we... go...
 
 ---
@@ -38,6 +30,8 @@ bower install
 npm run start
 ```
 > just like that... and is on [http://localhost:3000/](http://localhost:3000/ "http://localhost:3000/")
+
+[![MVC](https://github.com/brokengdnb/ava-data/blob/master/demo-img/home.png?raw=true "preview")](https://github.com/brokengdnb/ava-data/demo-img/home.png?raw=true "preview")
 
 ## Index
 
@@ -179,27 +173,46 @@ module.exports = (app) => {
 ## Idea
 
 So the idea is that I have 3 main elements that I would like to mix:
- - music
- - movies
- - video effects
 
-That can be imported by 3 different ways:
-- online (YouTube, Soundcloud, etc.)
-- offline
- - move
- - convert
+ - ### music [(project EMI)](https://github.com/brokengdnb/emi "(project EMI)")
+
+[![MVC](https://github.com/brokengdnb/ava-data/blob/master/demo-img/emi.png?raw=true "preview")](https://github.com/brokengdnb/ava-data/demo-img/emi.png?raw=true "preview")
+
+ - ### movies
+
+[![MVC](https://github.com/brokengdnb/ava-data/blob/master/demo-img/movies.png?raw=true "preview")](https://github.com/brokengdnb/ava-data/demo-img/movies.png?raw=true "preview")
+
+ - ### video effects
+
+[![MVC](https://github.com/brokengdnb/ava-data/blob/master/demo-img/effects.png?raw=true "preview")](https://github.com/brokengdnb/ava-data/demo-img/effects.png?raw=true "preview")
+
+## That can be imported by 3 different ways:
+- ### online (YouTube, Soundcloud, etc.)
+
+[![MVC](https://github.com/brokengdnb/ava-data/blob/master/demo-img/youtube.png?raw=true "preview")](https://github.com/brokengdnb/ava-data/demo-img/youtube.png?raw=true "preview")
+
+- ### offline (local)
+ - ### move
+ - ### convert
+
+[![MVC](https://github.com/brokengdnb/ava-data/blob/master/demo-img/local.png?raw=true "preview")](https://github.com/brokengdnb/ava-data/demo-img/local.png?raw=true "preview")
 
 Online is simply text to find API for getting YouTube (limit 1000 requests/day) or any other kind of media (Audio/Video) from anywhere or Offline internal import. That require specific format .mp4 with settings and parameters for seamless playing on any device (iOS, PC, Android, Television, Projectors) so If I already have that file ready from previous times I can just move it or I can create "new" one from ANY kind of file (.avi .flv .mkv. or whatever).
 
+[![MVC](https://github.com/brokengdnb/ava-data/blob/master/demo-img/csv.png?raw=true "preview")](https://github.com/brokengdnb/ava-data/demo-img/csv.png?raw=true "preview")
+
 That's individual import for each of element, once that is solved I started creating playlists. In project EMI once I get the right songs with the right effects in the right order, I'm exporting CSV file of those "files/songs" and that will get imported as well with direct connections between each other.
+
+[![MVC](https://github.com/brokengdnb/ava-data/blob/master/demo-img/playlist.png?raw=true "preview")](https://github.com/brokengdnb/ava-data/demo-img/playlist.png?raw=true "preview")
 
 Red dots means that song does not have image cover, by double click you can open modal and drag & drop a new cover image as well as import or edit original ID3 tags.
 
+[![MVC](https://github.com/brokengdnb/ava-data/blob/master/demo-img/edit.png?raw=true "preview")](https://github.com/brokengdnb/ava-data/demo-img/edit.png?raw=true "preview")
 
 
 ## Support
 
-- **OS X (tasted on 10.14.6)**
+- **OS X (tested on Mojave 10.14.6)**
 - Linux
 - ~~Windows~~  => *(I don't have one and I will **NOT** support this platform. Call Microsoft service in India or your local IT "experts"*
 
@@ -209,3 +222,5 @@ Red dots means that song does not have image cover, by double click you can open
 The MIT License.
 
 Copyright (c) 2020 BrokenG
+
+
